@@ -176,7 +176,7 @@ class World():
         #changing lane
 
         #car only change lanes with probability of 0.1
-        if random.randint(0, 0) == 0:
+        if random.randint(0, 0) == 9:
 
             #check if it can change lanes, look at car to the right and left
             car_left = car.Car(1, xcar.exists, xcar.row - 1, xcar.col, 0)
