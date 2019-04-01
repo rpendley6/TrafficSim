@@ -135,7 +135,7 @@ class World():
 
 
         #every iteration with probability () a car breaks down
-        if random.randint(0,50) == 1:
+        if random.randint(0,500) == 1:
             self.blockedCar(self.lanes, self.roadLength)
 
 
