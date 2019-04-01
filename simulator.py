@@ -14,19 +14,19 @@ def simulate(world, num):
         world.generateCars()
         print("\n")
         print(world.world)
-        # time.sleep(1)
+        time.sleep(1)
 
 
 #PEACHSTREET HAS TWO LANES
 lanes = 2
 
 #DISTANCE IS 1800FT so approx 125 sqaures
-roadlength = 35
+roadlength = 135
 
 #NUMBER OF NEW CARS PER TIME INTERVAL
 new_cars = 2
 
-new_world = world.World(lanes, roadlength, new_cars)
+new_world = world.World(lanes, roadlength, new_cars, 50)
 new_world.generateCars()
 print(new_world.world)
 

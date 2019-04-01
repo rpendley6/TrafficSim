@@ -14,20 +14,30 @@ class World():
     #MAX CAR VELOCITY IS 3
     VMAX = 3
 
-    def __init__(self, lanes, roadLength, new_cars):
+    def __init__(self, lanes, roadLength, new_cars, density):
 
         self.lanes = lanes
         self.roadLength = roadLength
         self.new_cars = new_cars
+        self.cars = []
+
 
         #Create a world full of empty cars of size lanes x roadlength
         self.world = np.full((lanes, roadLength), car.Car(0, self.EMPTY, 0, 0, 0), dtype=car.Car)
 
+        for i in range(0, self.lanes):
+            for j in range(0, self.roadLength):
+
+                if random.randint(0, 100) <= density:
+                    new_car = car.Car(0, self.FILLED, i, j, self.roadLength)
+                    self.world[i][j] = new_car
+                    self.cars.append(new_car)
+
         #crate an empty array of cars in the system
-        self.cars = []
         self.points = {}
         self.time = 0
         self.blocked_cars = []
+        self.traffic = [(40,3, 0), (80, 0, 0)]
 
     def generateCars(self):
 
@@ -84,6 +94,27 @@ class World():
 
     def propogateForward(self):
 
+
+        for i, x in enumerate(self.traffic):
+            loc, cur_time, on = x
+
+            if (cur_time == 5):
+
+                if on == 0:
+                    self.traffic[i] = (loc, 0, 1)
+                    print("traffic light at " + str(loc) + " is on")
+
+                else:
+                    self.traffic[i] = (loc, 0, 0)
+                    print("traffic light at " + str(loc) + " is off")
+
+
+            else:
+                self.traffic[i] = (loc, cur_time + 1, on)
+
+
+
+
         print(self.blocked_cars)
 
 
@@ -93,7 +124,7 @@ class World():
             blocked, cur_time = self.blocked_cars[i]
             cur_time = cur_time + 1
 
-            if cur_time == 10:
+            if cur_time == 5:
                 self.unblock(blocked)
                 remove.append(i)
             else:
@@ -120,6 +151,17 @@ class World():
         for i, xcar in enumerate(self.cars):
 
             length = self.findNextCar(xcar)
+            #check for traffic lights
+            #
+            for x in self.traffic:
+                if x[2] == 1:
+
+                    new_length = x[0] - xcar.col
+
+                    if (new_length > 0) & (new_length < length):
+                        length = new_length - 1
+                        print(length)
+
             xcar.nextCar = length
 
 
@@ -261,6 +303,17 @@ class World():
         blocked.exists = 1
         self.cars.append(blocked)
         print("unblocking")
+
+    def trafficOn(self, loc):
+
+        if (self.world[0][loc].exists == 0) & (self.world[1][loc] == 0):
+
+            self.world[0][loc] = car.Car(0, -2, 0, loc, self.roadLength)
+            self.world[0][loc] = car.Car(0, -2, 1, loc, self.roadLength)
+
+    def trafficOff(self, loc):
+        self.world[0][loc] = car.Car(0, self.EMPTY, 0, 0, 0)
+        self.world[1][loc] = car.Car(0, self.EMPTY, 0, 0, 0)
 
 
     # def plot(self):

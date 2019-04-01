@@ -20,6 +20,8 @@ class Car():
             return "X"
         elif (self.exists == -1):
             return "B"
+        elif(self.exists == -2):
+            return "S"
         else:
             return str(0);
 
@@ -28,6 +30,8 @@ class Car():
             return "X"
         elif (self.exists == -1):
             return "B"
+        elif(self.exists == -2):
+            return "S"
         else:
             return str(0);
 
