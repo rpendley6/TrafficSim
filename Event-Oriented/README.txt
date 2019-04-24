@@ -7,7 +7,7 @@ engine1.c	engine for event oriented model
 engine1.h	interface for engine
 
 To Compile:
-cc airport.c engine.c
+cc roadway.c engine1.c -lm
 
 To run:
 ./a.out
