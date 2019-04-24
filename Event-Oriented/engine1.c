@@ -8,6 +8,7 @@ struct Event {
 	void *AppData;			// pointer to event parameters
 	void (*callback)(void *);	// callback, parameter is event
 	struct Event *Next;		// priority queue pointer
+	int carID;
 } ;
 
 // Future Event List

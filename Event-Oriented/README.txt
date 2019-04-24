@@ -1,7 +1,5 @@
 README
 
-Author: Robert Pendley
-
 Files:
 
 roadway.c	logic for implementing Peachtree Street Simulation
