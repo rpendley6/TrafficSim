@@ -1,18 +1,29 @@
 import numpy as np
 import random
 import time
-from matplotlib import pyplot as plt
-from matplotlib import colors
 
 class Car():
 
-    def __init__(self, velocity, exists, row, col, nextCar):
+    def __init__(self, velocity, exists, row, col, nextCar, count):
+
+        #Probability there is a reckless driver
+        if random.randint(0, 50) == 0:
+
+            self.changeLanes = 8
+            self.VMAX = 5
+
+        else:
+
+            self.changeLanes = 1
+            self.VMAX = 3
 
         self.exists = exists
         self.velocity = velocity
         self.col = col
         self.row = row
         self.nextCar = nextCar
+        self.count = count
+
 
     def __str__(self):
 

@@ -2,6 +2,7 @@ import car as car
 import numpy as np
 import random
 import time
+import math
 from matplotlib import pyplot as plt
 from matplotlib import colors
 
@@ -11,8 +12,9 @@ class World():
     EMPTY = 0
     #SPACE IS FULL
     FILLED = 1
-    #MAX CAR VELOCITY IS 3
-    VMAX = 3
+
+    times = []
+
 
     def __init__(self, lanes, roadLength, new_cars, density):
 
@@ -20,16 +22,20 @@ class World():
         self.roadLength = roadLength
         self.new_cars = new_cars
         self.cars = []
+        self.count = 0
+        self.times = []
+        self.num = 0
+        self.numcount = 0
 
 
         #Create a world full of empty cars of size lanes x roadlength
-        self.world = np.full((lanes, roadLength), car.Car(0, self.EMPTY, 0, 0, 0), dtype=car.Car)
+        self.world = np.full((lanes, roadLength), car.Car(0, self.EMPTY, 0, 0, 0, 0), dtype=car.Car)
 
         for i in range(0, self.lanes):
             for j in range(0, self.roadLength):
 
                 if random.randint(0, 100) <= density:
-                    new_car = car.Car(0, self.FILLED, i, j, self.roadLength)
+                    new_car = car.Car(0, self.FILLED, i, j, self.roadLength, 0)
                     self.world[i][j] = new_car
                     self.cars.append(new_car)
 
@@ -37,26 +43,43 @@ class World():
         self.points = {}
         self.time = 0
         self.blocked_cars = []
-        self.traffic = [(40,3, 0), (80, 0, 0)]
+        self.traffic = [(37,20, 0), (72, 10, 0), (128, 0, 0)]
 
     def generateCars(self):
 
         new_lanes = list(range(0, self.lanes))
 
-        for i in range(0, self.new_cars):
+        print("numc")
+        print(self.numcount)
+        print("num")
+        print(self.num)
 
-            #randomly generate a lane for the car to enter
-            new_lane = random.randint(0, len(new_lanes) - 1)
-            new_lane = new_lanes[new_lane]
-            new_lanes.remove(new_lane)
-            #create new car
-            new_car = car.Car(1, self.FILLED, new_lane, 0, self.roadLength)
-            #add car to world
-            #
+        if (self.numcount == self.num):
+            self.numcount = 0
+            self.num = math.floor(-15 * math.log(1 - (random.uniform(0, 1) % (32767 + 1))))
 
-            if (self.world[new_lane][0].exists == 0):
-                self.world[new_lane][0] = new_car
-                self.cars.append(new_car)
+            #-12.438
+
+            random.randint(0,1)
+
+            for i in range(0, self.new_cars):
+
+                #randomly generate a lane for the car to enter
+                new_lane = random.randint(0, len(new_lanes) - 1)
+                new_lane = new_lanes[new_lane]
+                new_lanes.remove(new_lane)
+                #create new car
+                new_car = car.Car(1, self.FILLED, new_lane, 0, self.roadLength, self.count)
+                #add car to world
+                #
+
+                if (self.world[new_lane][0].exists == 0):
+                    self.world[new_lane][0] = new_car
+                    self.cars.append(new_car)
+
+        else:
+
+            self.numcount = self.numcount + 1
 
 
     def findNextCar(self, car):
@@ -94,23 +117,115 @@ class World():
 
     def propogateForward(self):
 
+        self.count = self.count + 1;
+
 
         for i, x in enumerate(self.traffic):
             loc, cur_time, on = x
 
-            if (cur_time == 5):
+            if (i == 0):
+                #Traffic Light on Peachtree and 11th
 
                 if on == 0:
-                    self.traffic[i] = (loc, 0, 1)
-                    print("traffic light at " + str(loc) + " is on")
 
-                else:
-                    self.traffic[i] = (loc, 0, 0)
-                    print("traffic light at " + str(loc) + " is off")
+                    if (cur_time == 41):
 
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
 
-            else:
-                self.traffic[i] = (loc, cur_time + 1, on)
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+
+                        self.traffic[i] = (loc, cur_time + 1, on)
+
+                elif on == 1:
+
+                    if (cur_time == 55):
+
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
+
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+
+                        self.traffic[i] = (loc, cur_time + 1, on)
+
+            elif (i == 1):
+
+                if on == 0:
+                    #Traffic Light on Peachtree and 12th
+
+                    if (cur_time == 60):
+
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
+
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+
+                        self.traffic[i] = (loc, cur_time + 1, on)
+
+                elif on == 1:
+
+                    if (cur_time == 35):
+
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
+
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+
+                        self.traffic[i] = (loc, cur_time + 1, on)
+
+            elif (i == 2):
+
+                if on == 0:
+                    #Traffic Light on Peachtree and 14th
+
+                    if (cur_time == 34):
+
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
+
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+
+                        self.traffic[i] = (loc, cur_time + 1, on)
+
+                elif on == 1:
+
+                    if (cur_time == 46):
+
+                        if on == 0:
+                            self.traffic[i] = (loc, 0, 1)
+                            print("traffic light at " + str(loc) + " is on")
+
+                        else:
+                            self.traffic[i] = (loc, 0, 0)
+                            print("traffic light at " + str(loc) + " is off")
+
+                    else:
+                        self.traffic[i] = (loc, cur_time + 1, on)
 
 
 
@@ -166,7 +281,7 @@ class World():
 
 
             #if car velocity is below maximum and the next car is far enough to allow the car to speed up
-            if (xcar.velocity < self.VMAX) & (xcar.nextCar >= (xcar.velocity + 1)):
+            if (xcar.velocity < xcar.VMAX) & (xcar.nextCar >= (xcar.velocity + 1)):
                 xcar.velocity = xcar.velocity + 1
 
             #if current velocity can't be maintained look to change lanes
@@ -177,14 +292,14 @@ class World():
                 if (xcar.velocity > (xcar.nextCar - 1)) & moved:
                     xcar.velocity = xcar.nextCar
 
-            #if current velocity can't be mainted just slow down
+            #if current velocity can't be mainted just slow down based on current gap
             elif (xcar.velocity > (xcar.nextCar - 1)):
                 xcar.velocity = xcar.nextCar
 
 
             if moved == False:
 
-                self.world[xcar.row][xcar.col] = car.Car(0, self.EMPTY, 0, 0, 0)
+                self.world[xcar.row][xcar.col] = car.Car(0, self.EMPTY, 0, 0, 0, 0)
                 xcar.col = new_car.col
                 xcar.row = new_car.row
                 xcar.velocity = new_car.velocity
@@ -197,11 +312,17 @@ class World():
                 #new position, is current coloumn plus velocity
                 new_col = xcar.col + xcar.velocity
                 #add an empty car in old position
-                self.world[xcar.row][xcar.col] = car.Car(0, self.EMPTY, 0, 0, 0)
+                self.world[xcar.row][xcar.col] = car.Car(0, self.EMPTY, 0, 0, 0, 0)
                 xcar.col = new_col
 
                 if new_col >= self.roadLength:
                     #remove car if it has left road
+                    new_time = self.count - xcar.count
+                    self.times.append(new_time)
+                    print("times")
+                    print(self.times)
+                    print("avg time is")
+                    print(sum(self.times)/len(self.times))
                     remove.append(xcar)
                 else:
                     #else add new position to car
@@ -218,11 +339,11 @@ class World():
         #changing lane
 
         #car only change lanes with probability of 0.1
-        if random.randint(0, 0) == 9:
+        if random.randint(0, 0) <= xcar.changeLanes:
 
             #check if it can change lanes, look at car to the right and left
-            car_left = car.Car(1, xcar.exists, xcar.row - 1, xcar.col, 0)
-            car_right = car.Car(1, xcar.exists, xcar.row + 1, xcar.col, 0)
+            car_left = car.Car(1, xcar.exists, xcar.row - 1, xcar.col, 0, xcar.count)
+            car_right = car.Car(1, xcar.exists, xcar.row + 1, xcar.col, 0, xcar.count)
 
             if (car_left.row >= 0):
 
@@ -303,18 +424,6 @@ class World():
         blocked.exists = 1
         self.cars.append(blocked)
         print("unblocking")
-
-    def trafficOn(self, loc):
-
-        if (self.world[0][loc].exists == 0) & (self.world[1][loc] == 0):
-
-            self.world[0][loc] = car.Car(0, -2, 0, loc, self.roadLength)
-            self.world[0][loc] = car.Car(0, -2, 1, loc, self.roadLength)
-
-    def trafficOff(self, loc):
-        self.world[0][loc] = car.Car(0, self.EMPTY, 0, 0, 0)
-        self.world[1][loc] = car.Car(0, self.EMPTY, 0, 0, 0)
-
 
     # def plot(self):
 
